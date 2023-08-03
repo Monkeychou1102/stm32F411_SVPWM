@@ -1,0 +1,17 @@
+ Pin   |  Pin Name
+---------------------
+ PA12     DEBUG1
+ PA11     DEBUG2
+
+ PA8      TIM1_CH1 (PWM 1)
+ PA9      TIM1_CH2 (PWM 2)
+ PA10     TIM1_CH3 (PWM 3)
+ PA7      TIM1_CH1N (PWM 1N)
+ PB0      TIM1_CH2N (PWM 2N)
+ PB1      TIM1_CH3N (PWM 3N)
+
+ PC13     B1 (EVM Blue Push Button)
+ PA5      LD2 (EVM Green Led)
+
+ PA2      USART2_TX
+ PA3      USART2_RT
