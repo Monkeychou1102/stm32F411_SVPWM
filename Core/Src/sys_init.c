@@ -1,6 +1,4 @@
-#include "../Inc/main.h"
 #include "../Inc/sys_init.h"
-#include "../Inc/pwm_func.h"
 
 /*
 Information of timer_1 interrupt
@@ -28,6 +26,5 @@ Then
 
 void SYS_Init(void)
 {
-    float a = SINE_Process(12);
     PWM_Init();
 }

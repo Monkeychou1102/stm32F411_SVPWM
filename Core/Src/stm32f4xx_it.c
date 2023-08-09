@@ -23,8 +23,7 @@
 #include "stm32f4xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-// #include "../Inc/xSine_func.h"
-#include "../Inc/pwm_func.h"
+#include "../Inc/sys_init.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -204,6 +203,8 @@ void SysTick_Handler(void)
 /**
  * @brief This function handles TIM1 update interrupt and TIM10 global interrupt.
  */
+volatile float sin_val[1024];
+
 void TIM1_UP_TIM10_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM1_UP_TIM10_IRQn 0 */
@@ -211,8 +212,7 @@ void TIM1_UP_TIM10_IRQHandler(void)
   /* USER CODE END TIM1_UP_TIM10_IRQn 0 */
   HAL_TIM_IRQHandler(&htim1);
   /* USER CODE BEGIN TIM1_UP_TIM10_IRQn 1 */
-  float sin_val[1024] = {0};
-  uint16_t deg = 0;
+  static uint16_t deg = 0;
   float val;
 
   if (deg <= 360)
@@ -221,7 +221,7 @@ void TIM1_UP_TIM10_IRQHandler(void)
     sin_val[deg] = val;
     deg++;
   }
-  PWM_SetDutyPwm1(100);
+
   HAL_GPIO_WritePin(GPIOA, DEBUG1_Pin, GPIO_PIN_RESET);
   /* USER CODE END TIM1_UP_TIM10_IRQn 1 */
 }

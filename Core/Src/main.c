@@ -22,7 +22,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "../Inc/sys_init.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
