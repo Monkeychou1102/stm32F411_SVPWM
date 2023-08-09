@@ -93,14 +93,8 @@ int main(void)
   MX_USART2_UART_Init();
   MX_TIM1_Init();
   /* USER CODE BEGIN 2 */
-  SYS_Init();
 
-  /* Example Code For APIs */
-  // PWM
-  // PWM_SetDutyPwm1(20);   // For Test
-  // PWM_SetDutyPwm2(50);   // For Test
-  // PWM_SetDutyPwm3(90);   // For Test
-  /* Example Code For APIs */
+  SYS_Init();
 
   /* USER CODE END 2 */
 

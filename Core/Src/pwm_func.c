@@ -2,6 +2,15 @@
 
 #define MAX_PWM_DUTY 1000
 
+/*
+Timer counter mode is centeraling
+        /\    /\
+       /  \  /  \
+      /    \/    \
+The pwm frequency is 25KHz.
+Value 0 ~ 1000 is mapping to duty 0 ~ 100%
+*/
+
 void startTimer1(void)
 {
     HAL_TIM_Base_Start_IT(&htim1);
@@ -32,6 +41,13 @@ void PWM_Init(void)
     startPWM1();
     startPWM2();
     startPWM3();
+
+    /* Example Code For APIs */
+    // PWM
+    // PWM_SetDutyPwm1(20); // For Test
+    // PWM_SetDutyPwm2(50); // For Test
+    // PWM_SetDutyPwm3(90); // For Test
+    /* Example Code For APIs */
 }
 
 float checkPwmDuty(float input_percent)
