@@ -9,6 +9,8 @@ Timer counter mode is centeraling
       /    \/    \
 The pwm frequency is 25KHz.
 Value 0 ~ 1000 is mapping to duty 0 ~ 100%
+
+The pwm frequency is 1/2 timer 1 ISR
 */
 
 void startTimer1(void)
