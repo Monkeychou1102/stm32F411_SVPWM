@@ -1,7 +1,7 @@
 #ifndef __PWM_FUNC_H
 #define __PWM_FUNC_H
 
-#include "../Inc/sine_func.h"
+#include "../Inc/sys_init.h"
 
 void PWM_Init(void);
 void PWM_SetDutyPwm1(float input_percent);

@@ -1,5 +1,8 @@
 #include "../Inc/sys_init.h"
 
+#define SINE60_INDEX ((SINE_TAB_SIZE * SINE_60_DEG) / SINE_90_DEG)
+#define SINE60_VALUE qtr_sine_table[SINE60_INDEX]
+
 const float qtr_sine_table[SINE_TAB_SIZE] = {
     0,
     0.0015355,
@@ -1029,31 +1032,36 @@ const float qtr_sine_table[SINE_TAB_SIZE] = {
 
 // Input  -> Degree = 0 ~ 360 degree
 // Output -> Value  = 0 ~ 1
-float SINE_Process(float degree)
+float SINE_GetSineValue(float degree)
 {
     uint16_t index = SINE_GAIN * degree;
     float val;
 
-    if (degree <= SINE_90_CNT) // 0 ~ 90 degree
+    if (degree <= SINE_90_DEG) // 0 ~ 90 degree
     {
         index = SINE_GAIN * degree;
         val = qtr_sine_table[index];
     }
-    else if (degree <= SINE_180_CNT) // 91 ~ 180 degree
+    else if (degree <= SINE_180_DEG) // 91 ~ 180 degree
     {
-        index = SINE_GAIN * (SINE_180_CNT - degree);
+        index = SINE_GAIN * (SINE_180_DEG - degree);
         val = qtr_sine_table[index];
     }
-    else if (degree <= SINE_270_CNT) // 181 ~ 270 degree
+    else if (degree <= SINE_270_DEG) // 181 ~ 270 degree
     {
-        index = SINE_GAIN * (degree - SINE_180_CNT);
+        index = SINE_GAIN * (degree - SINE_180_DEG);
         val = -qtr_sine_table[index];
     }
     else // 271 ~ 360 degree
     {
-        index = SINE_GAIN * (SINE_360_CNT - degree);
+        index = SINE_GAIN * (SINE_360_DEG - degree);
         val = -qtr_sine_table[index];
     }
 
     return val;
+}
+
+float SINE_GetSine60Value(void)
+{
+    return SINE60_VALUE; // Sine(60 degrees) = 0.866
 }
