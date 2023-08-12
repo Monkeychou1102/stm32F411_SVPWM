@@ -18,6 +18,8 @@ typedef struct svpwm_group_s
     float T1;
     float T2;
     float Tz;
+    float angle; // degrees
+    uint8_t sector;
 } svpwm_group_t;
 
 svpwm_group_t svpwm;
@@ -131,6 +133,9 @@ void CalculateT1T2Tz(float vref, float angle)
         alpha += 360;
     }
 
+    // Update pwm related information
+    svpwm.angle = angle;
+    svpwm.sector = angle / SINE_60_DEG;
     svpwm.T1 = vref * SINE_GetSineValue(alpha);
     svpwm.T2 = vref * SINE_GetSineValue(angle) / SINE_GetSine60Value();
     svpwm.Tz = MAX_PWM_DUTY - svpwm.T1 - svpwm.T2;
