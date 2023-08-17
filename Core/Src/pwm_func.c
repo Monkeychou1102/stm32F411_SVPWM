@@ -17,7 +17,7 @@ typedef struct svpwm_group_s
 {
     float T1;
     float T2;
-    float Tz;
+    float Tzero_vector;
     float Ts;
 
     float Angle; // degrees
@@ -56,7 +56,7 @@ void startPWM3(void)
 
 void initSvpwm(void)
 {
-    svpwm.Ts = MAX_PWM_DUTY; // PWM period
+    svpwm.Ts = MAX_PWM_DUTY; // 1/2 ofPWM period
 }
 
 void PWM_Init(void)
@@ -68,74 +68,58 @@ void PWM_Init(void)
     startPWM3();
 
     /* Example Code For APIs */
-    // PWM
-    // PWM_SetDutyPwm1(20); // For Test
-    // PWM_SetDutyPwm2(50); // For Test
-    // PWM_SetDutyPwm3(90); // For Test
+    // PWM Futy: 0 ~ 1000
+    // PWM_SetDutyPwm1(200); // For Test
+    // PWM_SetDutyPwm2(500); // For Test
+    // PWM_SetDutyPwm3(900); // For Test
     /* Example Code For APIs */
 
     initSvpwm();
 }
 
-float checkPwmDuty(float input_percent)
+void PWM_SetDutyPwm1(float duty)
 {
-    // Input 0 ~ 100%, then conver to 0 ~ 1 and return the result.
-
-    float val = 0;
-
-    if (input_percent > 100)
+    if (duty > MAX_PWM_DUTY)
     {
-        input_percent = 100;
+        duty = MAX_PWM_DUTY;
     }
 
-    val = input_percent / 100;
+    if (duty < 0)
+    {
+        duty = 0;
+    }
 
-    return val;
+    htim1.Instance->CCR1 = (uint32_t)(duty);
 }
 
-void PWM_SetDutyPwm1(float input_percent)
+void PWM_SetDutyPwm2(float duty)
 {
-    static float previous_duty = 0;
-    float val = 0;
-
-    if (input_percent == previous_duty)
+    if (duty > MAX_PWM_DUTY)
     {
-        return;
+        duty = MAX_PWM_DUTY;
     }
 
-    val = checkPwmDuty(input_percent);
-    previous_duty = val;
-    htim1.Instance->CCR1 = (uint32_t)(val * MAX_PWM_DUTY);
+    if (duty < 0)
+    {
+        duty = 0;
+    }
+
+    htim1.Instance->CCR2 = (uint32_t)(duty);
 }
 
-void PWM_SetDutyPwm2(float input_percent)
+void PWM_SetDutyPwm3(float duty)
 {
-    static float previous_duty = 0;
-    float val = 0;
-
-    if (input_percent == previous_duty)
+    if (duty > MAX_PWM_DUTY)
     {
-        return;
+        duty = MAX_PWM_DUTY;
     }
 
-    val = checkPwmDuty(input_percent);
-    previous_duty = val;
-    htim1.Instance->CCR2 = (uint32_t)(val * MAX_PWM_DUTY);
-}
-
-void PWM_SetDutyPwm3(float input_percent)
-{
-    static float previous_duty = 0;
-    float val = 0;
-
-    if (input_percent == previous_duty)
+    if (duty < 0)
     {
-        return;
+        duty = 0;
     }
 
-    val = checkPwmDuty(input_percent);
-    previous_duty = val;
-    htim1.Instance->CCR3 = (uint32_t)(val * MAX_PWM_DUTY);
+    htim1.Instance->CCR3 = (uint32_t)(duty);
 }
 
 void CalculateT1T2Tz(float vref, float angle)
@@ -151,9 +135,9 @@ void CalculateT1T2Tz(float vref, float angle)
     svpwm.Angle = angle;
     svpwm.Sector = (angle / SINE_60_DEG) + 1; // sector: 1 ~ 6
     svpwm.T1 = vref * SINE_GetSineValue(alpha);
-    svpwm.T2 = vref * SINE_GetSineValue(angle) / SINE_GetSine60Value();
-    svpwm.Tz = MAX_PWM_DUTY - svpwm.T1 - svpwm.T2; // T0 = Tz
-    svpwm.Ts = MAX_PWM_DUTY;                       // PWM period
+    svpwm.T2 = vref * SINE_GetSineValue(angle);              // / SINE_GetSine60Value();
+    svpwm.Tzero_vector = MAX_PWM_DUTY - svpwm.T1 - svpwm.T2; // T0 = Tz
+    svpwm.Ts = MAX_PWM_DUTY;                                 // PWM period
 }
 
 typedef enum
@@ -170,51 +154,48 @@ void UpdSvpwmDuty(void)
 {
     float t1 = svpwm.T1;
     float t2 = svpwm.T2;
-    float tz = svpwm.Tz / 2;
+    float t0_half = svpwm.Tzero_vector / 2;
     float ts = svpwm.Ts;
 
     switch (svpwm.Sector)
     {
     case SVPWM_SECTOR_1:
-        svpwm.Tga = tz;
-        svpwm.Tgb = tz + t1;
-        svpwm.Tgc = ts - tz;
+        svpwm.Tga = t1 + t2 - t0_half;
+        svpwm.Tgb = t2 + t0_half;
+        svpwm.Tgc = t0_half;
         break;
 
     case SVPWM_SECTOR_2:
-        svpwm.Tga = tz + t2;
-        svpwm.Tgb = tz;
-        svpwm.Tgc = ts - tz;
+        svpwm.Tga = t1 + t0_half;
+        svpwm.Tgb = t1 + t2 + t0_half;
+        svpwm.Tgc = t0_half;
         break;
 
     case SVPWM_SECTOR_3:
-        svpwm.Tga = ts - tz;
-        svpwm.Tgb = tz;
-        svpwm.Tgc = tz + t1;
+        svpwm.Tga = t0_half;
+        svpwm.Tgb = t1 + t2 + t0_half;
+        svpwm.Tgc = t2 + t0_half;
         break;
 
     case SVPWM_SECTOR_4:
-        svpwm.Tga = ts - tz;
-        svpwm.Tgb = ts + t2;
-        svpwm.Tgc = tz;
+        svpwm.Tga = t0_half;
+        svpwm.Tgb = t1 + t0_half;
+        svpwm.Tgc = t1 + t2 + t0_half;
         break;
 
     case SVPWM_SECTOR_5:
-        svpwm.Tga = tz + t1;
-        svpwm.Tgb = ts - tz;
-        svpwm.Tgc = tz;
+        svpwm.Tga = t2 + t0_half;
+        svpwm.Tgb = t0_half;
+        svpwm.Tgc = t1 + t2 + t0_half;
         break;
 
     case SVPWM_SECTOR_6:
-        svpwm.Tga = tz;
-        svpwm.Tgb = ts - tz;
-        svpwm.Tgc = tz + t2;
+        svpwm.Tga = t1 + t2 + t0_half;
+        svpwm.Tgb = t0_half;
+        svpwm.Tgc = t1 + t0_half;
         break;
 
     default:
-        svpwm.Tga = 0;
-        svpwm.Tgb = 0;
-        svpwm.Tgc = 0;
         break;
     }
 

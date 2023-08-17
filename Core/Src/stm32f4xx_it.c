@@ -203,19 +203,31 @@ void SysTick_Handler(void)
 /**
  * @brief This function handles TIM1 update interrupt and TIM10 global interrupt.
  */
+
+float aa = 0;
+
 void TIM1_UP_TIM10_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM1_UP_TIM10_IRQn 0 */
-  HAL_GPIO_WritePin(GPIOA, DEBUG1_Pin, GPIO_PIN_SET);
+  // HAL_GPIO_WritePin(GPIOA, DEBUG1_Pin, GPIO_PIN_SET);
   /* USER CODE END TIM1_UP_TIM10_IRQn 0 */
   HAL_TIM_IRQHandler(&htim1);
   /* USER CODE BEGIN TIM1_UP_TIM10_IRQn 1 */
   // 50KHz ISR
   // It takses 960 ns(~1 us) to handle ISR process
   // ----- Start Application----
-  //  PWM_SvpwmProcess(1000, 60);
+  if (aa < 360)
+  {
+    aa = aa + 0.1;
+  }
+  else
+  {
+    aa = 0;
+    HAL_GPIO_TogglePin(GPIOA, DEBUG1_Pin);
+  }
+  PWM_SvpwmProcess(500, aa);
   // -------End Application ----
-  HAL_GPIO_WritePin(GPIOA, DEBUG1_Pin, GPIO_PIN_RESET);
+  // HAL_GPIO_WritePin(GPIOA, DEBUG1_Pin, GPIO_PIN_RESET);
 
   /* USER CODE END TIM1_UP_TIM10_IRQn 1 */
 }

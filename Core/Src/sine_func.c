@@ -1034,7 +1034,7 @@ const float qtr_sine_table[SINE_TAB_SIZE] = {
 // Output -> Value  = 0 ~ 1
 float SINE_GetSineValue(float degree)
 {
-    uint16_t index = SINE_GAIN * degree;
+    uint16_t index = 0;
     float val;
 
     if (degree <= SINE_90_DEG) // 0 ~ 90 degree
