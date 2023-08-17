@@ -1031,11 +1031,16 @@ const float qtr_sine_table[SINE_TAB_SIZE] = {
 };
 
 // Input  -> Degree = 0 ~ 360 degree
-// Output -> Value  = 0 ~ 1
+// Output -> Value  = -1 ~ 1
 float SINE_GetSineValue(float degree)
 {
     uint16_t index = 0;
     float val;
+
+    if (degree > 360)
+    {
+        degree -= 360;
+    }
 
     if (degree <= SINE_90_DEG) // 0 ~ 90 degree
     {
@@ -1059,6 +1064,13 @@ float SINE_GetSineValue(float degree)
     }
 
     return val;
+}
+
+// Input  -> Degree = 0 ~ 360 degree
+// Output -> Value  = -1 ~ 1
+float SINE_GetCosineValue(float degree)
+{
+    return SINE_GetSineValue(degree + 90);
 }
 
 float SINE_GetSine60Value(void)

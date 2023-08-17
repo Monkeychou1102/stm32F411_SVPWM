@@ -218,7 +218,7 @@ void TIM1_UP_TIM10_IRQHandler(void)
   // ----- Start Application----
   if (aa < 360)
   {
-    aa = aa + 0.1;
+    aa = aa + 0.01;
   }
   else
   {
