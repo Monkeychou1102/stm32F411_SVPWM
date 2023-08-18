@@ -1,4 +1,5 @@
 #include "../Inc/sys_init.h"
+#include <math.h>
 
 #define SINE60_INDEX ((SINE_TAB_SIZE * SINE_60_DEG) / SINE_90_DEG)
 #define SINE60_VALUE qtr_sine_table[SINE60_INDEX]
@@ -1037,7 +1038,7 @@ float SINE_GetSineValue(float degree)
     uint16_t index = 0;
     float val;
 
-    if (degree > 360)
+    while (degree >= 360)
     {
         degree -= 360;
     }
@@ -1076,4 +1077,11 @@ float SINE_GetCosineValue(float degree)
 float SINE_GetSine60Value(void)
 {
     return SINE60_VALUE; // Sine(60 degrees) = 0.866
+}
+
+// Input  -> Degree = 0 ~ 360 degree
+// Output -> Value  = -1 ~ 1
+float SINE_GetActanValue(float degree)
+{
+    return atanf(degree);
 }
