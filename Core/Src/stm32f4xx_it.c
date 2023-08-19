@@ -218,13 +218,14 @@ void TIM1_UP_TIM10_IRQHandler(void)
   // ----- Start Application----
   if (aa < 360)
   {
-    aa = aa + 0.2;
+    aa = aa + 1;
   }
   else
   {
     aa = 0;
     HAL_GPIO_TogglePin(GPIOA, DEBUG1_Pin);
   }
+
   PWM_SvpwmProcess(500, aa);
   // -------End Application ----
   // HAL_GPIO_WritePin(GPIOA, DEBUG1_Pin, GPIO_PIN_RESET);

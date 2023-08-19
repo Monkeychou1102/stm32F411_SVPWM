@@ -1,6 +1,9 @@
 #include "../Inc/sys_init.h"
 #include <math.h>
 
+#define DEGREE180 180
+#define PI_VAL 3.14159
+#define ARCTAN_COEFF DEGREE180 / PI_VAL
 #define SINE60_INDEX ((SINE_TAB_SIZE * SINE_60_DEG) / SINE_90_DEG)
 #define SINE60_VALUE qtr_sine_table[SINE60_INDEX]
 
@@ -1079,9 +1082,35 @@ float SINE_GetSine60Value(void)
     return SINE60_VALUE; // Sine(60 degrees) = 0.866
 }
 
-// Input  -> Degree = 0 ~ 360 degree
-// Output -> Value  = -1 ~ 1
-float SINE_GetActanValue(float degree)
+// Input  -> y and x value to compute y/x value
+// Output -> Degree  = 0 ~ 360 degrees
+float SINE_GetActanValue(float y, float x)
 {
-    return atanf(degree);
+    float offset_angle = 0;
+    double angle_atanf = 0;
+    float angle = 0;
+
+    if (y >= 0 && x >= 0)
+    {
+        offset_angle = 0;
+    }
+    else if (y >= 0 && x <= 0)
+    {
+        offset_angle = 180;
+    }
+    else if (y <= 0 && x <= 0)
+    {
+        offset_angle = 180;
+    }
+    else
+    {
+        offset_angle = 360;
+    }
+
+    // atanf returns -90 ~ 90 degrees
+    angle_atanf = atan(y / x);
+    // Transfer to degree 0 ~ 360 degrees
+    angle = angle_atanf * ARCTAN_COEFF + offset_angle;
+
+    return angle;
 }

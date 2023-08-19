@@ -19,6 +19,6 @@
 float SINE_GetSineValue(float degree);
 float SINE_GetCosineValue(float degree);
 float SINE_GetSine60Value(void);
-float SINE_GetActanValue(float degree);
+float SINE_GetActanValue(float y, float x);
 
 #endif /* __SINE_FUNC_H */
