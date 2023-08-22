@@ -211,6 +211,11 @@ void UpdSvpwmDuty(void)
 /*
 MCU: stm32f411RE (@100MHz)
 Test this process in 50KHz Timer ISR
+Under different optimized level, the execution time is
+If
+level = None (-O0), executaion time is 17 us.
+level = Most (-O3), executaion time is 11.6 us.
+level = Fast (-Ofast), executaion time is 10.8 us.
 It takes about 5.6us to compute the SVPWM switching rules.
 */
 void PWM_SvpwmProcess(float vref, float angle)
